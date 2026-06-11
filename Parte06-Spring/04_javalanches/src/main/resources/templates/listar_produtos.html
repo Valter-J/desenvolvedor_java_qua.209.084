@@ -28,7 +28,7 @@
                             <strong>
                                 <span th:text="${categoria.codigoCategoria}"></span>
                                 .
-                                <span th:text="${categoria.nomeCategoria.toUpperCase()}"></span>
+                                <a class="text-white text-decoration-nome" th:href="@{/atualizarCategoria(codigoCategoria=${categoria.codigoCategoria})}" th:text="${categoria.nomeCategoria.toUpperCase()}"></a>
                                 
                             </strong>
 

@@ -8,9 +8,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.crud.javalanches.models.Categoria;
 import com.crud.javalanches.models.Cliente;
@@ -110,7 +113,21 @@ public class JavaLanchesController {
 
 
 
+    @GetMapping("/atualizarCategoria")
+    public String atualizarCategoria(@RequestParam("codigoCategoria") Long codigoCategoria, Model model){
+        Categoria categoria = categoriaRepository.findById(codigoCategoria).orElse(null);
+        model.addAttribute("categoria",categoria);
+        return "Atualizar_categoria";
 
+    }
+
+
+    // FIXME: postmapping está cadastrando nova categoria, mas não está atualizando
+    @PostMapping("/atualizarCategoria")
+    public String atualizarCategoria(@Validated Categoria categoria, BindingResult result, RedirectAttributes attributes){
+        categoriaRepository.save(categoria);
+        return "atualizar_categoria_sucesso";
+    }
     
 
     
