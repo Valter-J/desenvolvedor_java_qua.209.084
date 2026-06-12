@@ -116,17 +116,43 @@ public class JavaLanchesController {
     @GetMapping("/atualizarCategoria")
     public String atualizarCategoria(@RequestParam("codigoCategoria") Long codigoCategoria, Model model){
         Categoria categoria = categoriaRepository.findById(codigoCategoria).orElse(null);
-        model.addAttribute("categoria",categoria);
-        return "Atualizar_categoria";
+        model.addAttribute("categoria", categoria);
+        return "atualizar_categoria";
 
     }
 
 
+
     // FIXME: postmapping está cadastrando nova categoria, mas não está atualizando
+    // @PostMapping("/atualizarCategoria")
+    // public String atualizarCategoria(@Validated Categoria categoria, BindingResult result, RedirectAttributes attributes){
+    //     categoriaRepository.save(categoria);
+    //     return "atualizar_categoria_sucesso";
+    // }
+
     @PostMapping("/atualizarCategoria")
-    public String atualizarCategoria(@Validated Categoria categoria, BindingResult result, RedirectAttributes attributes){
+    public String atualizarCategoria( Categoria categoria){
         categoriaRepository.save(categoria);
         return "atualizar_categoria_sucesso";
+    }
+    
+
+
+    @GetMapping("/atualizarProduto")
+    public String atualizarProduto(@RequestParam("codigoProduto")Long codigoProduto, Model model){
+        Produto produto = produtoRepository.findById(codigoProduto).orElse(null);
+        model.addAttribute("produto", produto);
+        model.addAttribute("categorias", categoriaRepository.findAll());
+        return "atualizar_produto";
+    }
+
+
+    @PostMapping("/atualizarProduto")
+    public String atualizarProduto(Produto produto, @RequestParam("categoriaId") Long categoriaId){
+        Categoria categoria = categoriaRepository.findById(categoriaId).orElse(null);
+        produto.setCategoria(categoria);
+        produtoRepository.save(produto);
+        return "atualizar_produto_sucesso";
     }
     
 

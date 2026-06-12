@@ -24,7 +24,8 @@
 
                 <div th:each="categoria: ${categorias}">
                     <div class="card mb-4">
-                        <div class="card-header bg-secondary text-white">''
+                        <div class="card-header bg-secondary text-white">
+                            
                             <strong>
                                 <span th:text="${categoria.codigoCategoria}"></span>
                                 .
@@ -47,7 +48,7 @@
                                         <p class="mb-1 fw-semibold">
                                             <span th:text="${produto.codigoProduto}"></span>
                                             <span> - </span>
-                                            <span th:text="${produto.nomeProduto}"></span>
+                                            <a th:href="@{/atualizarProduto(codigoProduto=${produto.codigoProduto})}"  th:text="${produto.nomeProduto}"></a>
                                             <span> R$ </span>
                                             <span th:text="${produto.precoProduto}"></span>
 
