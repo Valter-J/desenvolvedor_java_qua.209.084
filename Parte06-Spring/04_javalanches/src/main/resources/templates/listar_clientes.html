@@ -40,6 +40,10 @@
                                     <div class="mb-3 text-end">
                                         <a class="btn btn-sm btn-outline-primary"
                                             th:href="@{/atualizarCliente(codigoCliente=${cliente.codigoCliente})}">Editar</a>
+                                        
+                                        <a class="btn btn-sm btn-outline-danger"
+                                            th:href="@{/deletarCliente(codigoCliente=${cliente.codigoCliente})}"
+                                            onclick="return confirm('Tem certeza que deseja excluir este cliente e todos os seus endereços?');">Excluir cliente</a>
                                     </div>
                                     <div class="row g-3">
                                         <div class="col-md-6">

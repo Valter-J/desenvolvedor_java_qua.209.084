@@ -1,5 +1,8 @@
 package com.crud.javalanches.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +21,8 @@ import com.crud.javalanches.repository.CategoriaRepository;
 import com.crud.javalanches.repository.ClienteRepository;
 import com.crud.javalanches.repository.EnderecoRepository;
 import com.crud.javalanches.repository.ProdutoRepository;
+
+import jakarta.transaction.Transactional;
 
 @Controller
 public class JavaLanchesController {
@@ -213,16 +218,54 @@ public class JavaLanchesController {
 
 
     // NOTE: MINHA ALTERAÇÃO
+    @Transactional
     @GetMapping("/excluirEndereco")
     public String excluirEndereco(
-            @RequestParam("codigoEndereco") Long codigoEndereco) {
+            @RequestParam("codigoEndereco") Long codigoEndereco, 
+            @RequestParam("codigoCliente") Long codigoCliente) {
 
-        Endereco endereco = enderecoRepository
-                .findById(codigoEndereco)
-                .orElse(null);
+        Endereco endereco = enderecoRepository.findById(codigoEndereco).orElse(null);
+        Cliente cliente = clienteRepository.findById(codigoCliente).orElse(null);
 
-        if (endereco != null) {
+        if (cliente == null || endereco == null) {
+            return "redirect:/listarClientes";
+        }
+
+        cliente.getEnderecos().remove(endereco);
+        endereco.getClientes().remove(cliente);
+        clienteRepository.save(cliente);
+
+        if (endereco.getClientes().isEmpty()) {
             enderecoRepository.delete(endereco);
+        } else {
+            enderecoRepository.save(endereco);
+        }
+
+        return "redirect:/listarClientes";
+    }
+
+
+    @Transactional
+    @GetMapping("/deletarCliente")
+    public String deletarCliente(@RequestParam("codigoCliente") Long codigoCliente) {
+        Cliente cliente = clienteRepository.findById(codigoCliente).orElse(null);
+        if (cliente == null) {
+            return "redirect:/listarClientes";
+        }
+
+        List<Endereco> enderecos = new ArrayList<>(cliente.getEnderecos());
+
+        cliente.getEnderecos().clear();
+        clienteRepository.save(cliente);
+        clienteRepository.delete(cliente);
+
+        for (Endereco endereco : enderecos) {
+            endereco.getClientes().remove(cliente);
+            if (endereco.getClientes().isEmpty()) {
+                enderecoRepository.delete(endereco);
+            } else {
+                enderecoRepository.save(endereco);
+            }
         }
 
         return "redirect:/listarClientes";
